@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tables</title>
+</head>
+
+<body>
+    <h1>Hot Restaurant</h1>
+    <h2>Current Reservations and Waiting List</h2>
+    <button id="js-clear">Clear Reservations</button>
+    <div>Current Reservations</div>
+    <!-- our tables database -->
+    <h3>Current Reservations</h3>
+    <div id="js-tables"></div>
+
+    <h3>Waitlist</h3>
+        <!-- our waitlist database -->
+    <div id="js-waitList"></div>
+</body>
+
+<script>
+    document.getElementById('js-clear').addEventListener('click', (e) => {
+        alert('clearing...');
+        fetch('/api/clear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                document.getElementById('js-tables').innerHTML='';
+                document.getElementById('js-waitList').innerHTML='';
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    });
+
+
+
+
+    fetch('/api/tables', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            // send data
+            const jsTables = document.getElementById('js-tables');
+            data.forEach(table => {
+                const tableDiv = document.createElement('div');
+                tableDiv.textContent = table.customerName;
+                jsTables.appendChild(tableDiv);
+            })
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+
+        fetch('/api/waitlist', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    // send data
+                    const jsWaitList = document.getElementById('js-waitList');
+                    data.forEach(waitList => {
+                        const waitListDiv = document.createElement('div');
+                        waitListDiv.textContent = waitList.customerName;
+                        jsWaitList.appendChild(waitListDiv);
+                    })
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+</script>
+
+</html>
